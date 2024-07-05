@@ -2,6 +2,7 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 from playwright.async_api import async_playwright
 import re
 import asyncio
+import csv
 
 # type1のテスト
 async def type1(page):
@@ -45,10 +46,23 @@ async def type1(page):
     await download.save_as("./downloaded/" + download.suggested_filename)
     # プロジェクト画面に戻る
 
-async def input_type2(page, width, depth, door, doorPos, cl, la, num):
-    await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill(width)
-    await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill(depth)
-    if door == False:
+async def input_type2(page, size, door, doorPos, cl, la, num):
+    if size == "superHorizontal":
+        await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("8000")
+        await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("3000")
+    elif size == "horizontal":
+        await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("7000")
+        await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("4000")
+    elif size == "square":
+        await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("5000")
+        await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("5000")
+    elif size == "vertical":
+        await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("4000")
+        await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("7000")
+    else:
+        await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("3000")
+        await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("8000")
+    if door == "doorless":
         await page.locator(".v-input--selection-controls__ripple").first.click()
     else:
         await page.locator("div:nth-child(3) > .v-radio > .v-input--selection-controls__input > .v-input--selection-controls__ripple").first.click()
@@ -67,7 +81,7 @@ async def input_type2(page, width, depth, door, doorPos, cl, la, num):
     await page.locator("div:nth-child(3) > div > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill(num)
 
 # type2のテスト
-async def type2(page, width, depth, door, doorPos, cl, la, num, index):
+async def type2(page, sex, size, door, doorPos, cl, la, num, index):
     # ケース作成
     await page.locator(".col > .button-open").first.click()
     await page.locator(".py-0 > .v-input > .v-input__control > .v-input__slot").click()
@@ -75,22 +89,29 @@ async def type2(page, width, depth, door, doorPos, cl, la, num, index):
     await page.get_by_role("button", name="作成", exact=True).click()
     await page.get_by_text("一般トイレ", exact=True).click()
     await page.get_by_role("button", name="次へ").click()
-    await page.get_by_text("男性トイレ").click()
+    if sex == "male":
+        await page.get_by_text("男性トイレ").click()
+    else:
+        await page.get_by_text("女性トイレ").click()
     await page.get_by_role("button", name="次へ").click()
     await page.wait_for_load_state()
     # 計算条件選択
-    await input_type2(page, width, depth, door, doorPos, cl, la, num)
+    await input_type2(page, size, door, doorPos, cl, la, num)
     await page.get_by_role("button", name="この条件で設計する").click()
     # 結果一覧画面
     await page.wait_for_selector("text=レイアウト計算条件")
-    await page.wait_for_timeout(5000)
+    await page.wait_for_timeout(3000)
     await page.screenshot(path="./output/" + index + "/結果一覧.png", full_page=True)
     await page.get_by_role("link", name="プランを見る").first.click()
     await page.wait_for_load_state()
     # 詳細画面
     await page.wait_for_selector("#toolbar-fullscreenTool")
-    await page.wait_for_timeout(5000)
-    await page.screenshot(path="./output/" + index + "/詳細.png", full_page=True)
+    await page.wait_for_timeout(3000)
+    await page.screenshot(path="./output/" + index + "/3D詳細.png", full_page=True)
+    await page.get_by_role("tab", name="2D平面図").click()
+    await page.wait_for_selector("#toolbar-cameraSubmenuTool")
+    await page.wait_for_timeout(3000)
+    await page.screenshot(path="./output/" + index + "/2D詳細.png", full_page=True)
     await page.get_by_role("button", name="カートに追加").click()
     await page.get_by_role("link", name="カート Badge").click()
     await page.wait_for_load_state()
@@ -110,14 +131,14 @@ async def type2(page, width, depth, door, doorPos, cl, la, num, index):
     await page.get_by_role("link", name="プロジェクト").click()
     await page.wait_for_load_state()
 
-async def calcurate(width, depth, door, doorPos, cl, la, num, index):
+async def calculate(sex, size, door, doorPos, cl, la, num, index):
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=False)
-        # context = await browser.new_context()
-        context = await browser.new_context(
-            record_video_dir="./videos",
-            record_video_size={"height": 768, "width": 1024},
-        )
+        context = await browser.new_context()
+        # context = await browser.new_context(
+        #     record_video_dir="./videos",
+        #     record_video_size={"height": 768, "width": 1024},
+        # )
         page = await context.new_page()
         page.set_default_timeout(120000)
         # 認証画面
@@ -150,18 +171,20 @@ async def calcurate(width, depth, door, doorPos, cl, la, num, index):
         await page.get_by_placeholder("メモ欄").fill("test")
         await page.get_by_role("button", name="作成", exact=True).click()
         await page.wait_for_load_state()
-        await type2(page, width, depth, door, doorPos, cl, la, num, index)
+        await type2(page, sex, size, door, doorPos, cl, la, num, index)
 
         # ---------------------
         await context.close()
         await browser.close()
 
 async def main():
-    task1 = asyncio.create_task(calcurate("7000", "3000", False, "right", "wall", "wall", "100", "1"))
-    task2 = asyncio.create_task(calcurate("5000", "5000", True, "left", "floor", "counter", "200", "2"))
-    task3 = asyncio.create_task(calcurate("4000", "7000", True, "left", "wall", "wall", "250", "3"))
-    await task1
-    await task2
-    await task3
+    with open('./test_case.csv') as f:
+        reader = csv.reader(f)
+        params_list = [row for row in reader]
+
+    tasks = [calculate(*params) for params in params_list[0:5]]
+
+    await asyncio.gather(*tasks)
+
 
 asyncio.run(main())
