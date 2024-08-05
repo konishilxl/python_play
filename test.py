@@ -46,7 +46,7 @@ async def type1(page):
     await download.save_as("./downloaded/" + download.suggested_filename)
     # プロジェクト画面に戻る
 
-async def input_type2(page, size, door, doorPos, cl, la, num):
+async def input_type2(page, size, door, doorPos, cl, la, num, sk):
     if size == "superHorizontal":
         await page.locator("div:nth-child(2) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("8000")
         await page.locator("div:nth-child(3) > .pa-2 > .row > div:nth-child(2) > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill("3000")
@@ -81,7 +81,7 @@ async def input_type2(page, size, door, doorPos, cl, la, num):
     await page.locator("div:nth-child(3) > div > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input").fill(num)
 
 # type2のテスト
-async def type2(page, sex, size, door, doorPos, cl, la, num, index):
+async def type2(page, sex, size, door, doorPos, cl, la, num, sk, index):
     # ケース作成
     await page.locator(".col > .button-open").first.click()
     await page.locator(".py-0 > .v-input > .v-input__control > .v-input__slot").click()
@@ -96,7 +96,7 @@ async def type2(page, sex, size, door, doorPos, cl, la, num, index):
     await page.get_by_role("button", name="次へ").click()
     await page.wait_for_load_state()
     # 計算条件選択
-    await input_type2(page, size, door, doorPos, cl, la, num)
+    await input_type2(page, size, door, doorPos, cl, la, num, sk)
     await page.get_by_role("button", name="この条件で設計する").click()
     # 結果一覧画面
     await page.wait_for_selector("text=レイアウト計算条件")
@@ -131,7 +131,7 @@ async def type2(page, sex, size, door, doorPos, cl, la, num, index):
     await page.get_by_role("link", name="プロジェクト").click()
     await page.wait_for_load_state()
 
-async def calculate(sex, size, door, doorPos, cl, la, num, index):
+async def calculate(sex, size, door, doorPos, cl, la, sk, num, index):
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=False)
         context = await browser.new_context()
@@ -171,14 +171,14 @@ async def calculate(sex, size, door, doorPos, cl, la, num, index):
         await page.get_by_placeholder("メモ欄").fill("test")
         await page.get_by_role("button", name="作成", exact=True).click()
         await page.wait_for_load_state()
-        await type2(page, sex, size, door, doorPos, cl, la, num, index)
+        await type2(page, sex, size, door, doorPos, cl, la, num, sk, index)
 
         # ---------------------
         await context.close()
         await browser.close()
 
 async def main():
-    with open('./test_case.csv') as f:
+    with open('./test_case_2.csv') as f:
         reader = csv.reader(f)
         params_list = [row for row in reader]
 
