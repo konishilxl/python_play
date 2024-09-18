@@ -182,7 +182,7 @@ async def main():
         reader = csv.reader(f)
         params_list = [row for row in reader]
 
-    tasks = [calculate(*params) for params in params_list[0:5]]
+    tasks = [calculate(*params) for params in params_list[0:10]]
 
     await asyncio.gather(*tasks)
 
