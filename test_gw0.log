@@ -1,0 +1,7 @@
+2024-10-04 15:32:53,342 INFO worker:gw0  url:https://dev-a-spec.lixil.com/projects/  title:LIXIL ビジネス情報｜A-SPEC｜プロジェクト一覧
+2024-10-04 15:41:22,985 INFO worker:gw0  url:https://dev-a-spec.lixil.com/projects/  time:1.4583940505981445
+2024-10-04 15:48:33,831 INFO worker:gw0  url:https://dev-a-spec.lixil.com/projects/  time:1.8921170234680176
+2024-10-04 15:50:54,854 INFO worker:gw0  url:https://dev-a-spec.lixil.com/projects/  time:1.2984671592712402
+2024-10-04 16:04:41,828 INFO worker:gw0  url:https://dev-a-spec.lixil.com/cart/  time:47.57880115509033
+2024-10-04 16:12:17,287 INFO worker:gw0 show_3d:32.918073654174805 show_2d:96.40622878074646 dl:36.729154109954834
+2024-10-04 16:26:45,854 INFO worker:gw0 calculation:43.208152055740356 show_2d:6.844664096832275 dl:34.84515690803528

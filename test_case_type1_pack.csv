@@ -1,0 +1,8 @@
+pack,pack_hc,absence,presence,absense,absence,presence,1
+pack,pack_hl,presence,absence,cbset,absence,none,2
+pack,pack_hl,absence,absence,absense,presence,absence,3
+pack,pack_hc,absence,presence,cbset,presence,none,4
+pack,pack_hc,absence,absence,set,absence,none,5
+pack,pack_hc,presence,presence,absense,absence,absence,6
+pack,pack_hl,presence,presence,set,presence,none,7
+pack,pack_hl,presence,absence,absense,presence,presence,8
